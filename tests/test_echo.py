@@ -7,7 +7,7 @@ Students are expected to edit this module, to add more tests to run
 against the 'echo.py' program.
 """
 
-__author__ = "???"
+__author__ = "Trey Dickerson"
 
 import sys
 import importlib
@@ -88,9 +88,15 @@ class TestEcho(unittest.TestCase):
             result, argparse.ArgumentParser,
             "create_parser() function is not returning a parser object")
 
-    #
-    # Students: add more parser tests here
-    #
+    def test_help(self):
+        """Check if usage output matches what is expected."""
+        process = subprocess.Popen(
+            ['python', './echo.py', '-h'], 
+            stdout=subprocess.PIPE)
+        stdout, _ = process.communicate()
+        with open('USAGE') as f:
+            usage = f.read()
+        self.assertEqual(stdout.decode(), usage)
 
     def test_echo(self):
         """Check if main() function prints anything at all"""
@@ -114,10 +120,34 @@ class TestEcho(unittest.TestCase):
         assert output, "The program did not print anything."
         self.assertEqual(output[0], "hello world")
 
-    #
-    # Students: add more cmd line options tests here.
-    #
+    def test_upper_short(self):
+        """Check if short option '-u' performs uppercasing"""
+        args = ["-u", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)        
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], 'HELLO WORLD')
 
+    def test_upper_long(self):
+        args = ["--upper", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)        
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], 'HELLO WORLD')
+
+    def test_no_options(self):
+        args = ['hello world']
+        with Capturing() as output:
+            self.module.main(args)        
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], 'hello world')
+
+    def test_all_options(self):
+        args = ["-tul", "hElLo wORld"]
+        with Capturing() as output:
+            self.module.main(args)           
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], 'Hello World')
 
 if __name__ == '__main__':
     unittest.main()
