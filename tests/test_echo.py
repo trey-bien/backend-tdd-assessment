@@ -128,12 +128,35 @@ class TestEcho(unittest.TestCase):
         assert output, "The program did not print anything."
         self.assertEqual(output[0], 'HELLO WORLD')
 
+    def test_lower_long(self):
+        args = ["--lower", "HELLO WORLD"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "hello world")
+
     def test_upper_long(self):
         args = ["--upper", "hello world"]
         with Capturing() as output:
             self.module.main(args)        
         assert output, "The program did not print anything."
         self.assertEqual(output[0], 'HELLO WORLD')
+
+    def test_title_short(self):
+        """Check if short option '-t' performs title-casing"""
+        args = ["-t", "HELLO WORLD"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
+
+    def test_title_long(self):
+        """Check if long option '--title' performs titlecasing"""
+        args = ["--title", "Hello World"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
 
     def test_no_options(self):
         args = ['hello world']
